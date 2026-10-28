@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DigitGenie — India's AI Software Marketplace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --g1:#00ffa3;--g2:#00d5ff;
+  --nav:#060d10;--nav2:#0a1419;--nav3:#0d1a20;
+  --dark:#030608;--dark2:#07090b;--dark3:#0e1318;
+  --text:#e8edf2;--muted:#7a8a96;--sub:#b0bec5;
+  --grad:linear-gradient(90deg,#00ffa3,#00d5ff);
+  --amz:#f90; /* Amazon orange accent — we replace with green */
+  --border:rgba(255,255,255,0.07);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--dark2);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;}
+a{text-decoration:none;color:inherit;}
+
+/* ─── TOP NAV BAR 1 ─── */
+.nav1{background:var(--nav);padding:0 16px;display:flex;align-items:center;gap:10px;height:60px;position:sticky;top:0;z-index:200;border-bottom:1px solid rgba(0,255,163,.07);}
+.nav1-logo{display:flex;align-items:center;gap:8px;padding:6px 10px;border:2px solid transparent;border-radius:4px;cursor:pointer;flex-shrink:0;transition:.2s;}
+.nav1-logo:hover{border-color:var(--g1);}
+.nav1-logo img{height:32px;filter:drop-shadow(0 0 8px rgba(0,255,163,.5));}
+.nav1-logo span{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;white-space:nowrap;}
+.nav1-logo span em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+
+.nav1-deliver{padding:6px 10px;border:2px solid transparent;border-radius:4px;cursor:pointer;transition:.2s;flex-shrink:0;}
+.nav1-deliver:hover{border-color:var(--g1);}
+.nav1-deliver .d1{font-size:11px;color:var(--muted);}
+.nav1-deliver .d2{font-size:13px;font-weight:700;color:var(--g1);display:flex;align-items:center;gap:4px;}
+
+.search-bar{flex:1;display:flex;height:40px;border-radius:8px;overflow:hidden;max-width:900px;}
+.search-cat{background:#1a2530;border:none;color:var(--sub);font-size:12px;padding:0 10px;cursor:pointer;border-right:1px solid rgba(255,255,255,.1);white-space:nowrap;font-family:'DM Sans',sans-serif;outline:none;min-width:120px;}
+.search-cat:hover{background:#1e2d3a;}
+.search-input{flex:1;background:#fff;border:none;padding:0 14px;font-size:14px;color:#111;outline:none;font-family:'DM Sans',sans-serif;}
+.search-input::placeholder{color:#999;}
+.search-btn{background:var(--g1);border:none;width:46px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px;transition:.2s;flex-shrink:0;}
+.search-btn:hover{background:#00e890;box-shadow:0 0 20px rgba(0,255,163,.5);}
+
+.nav1-right{display:flex;align-items:center;gap:4px;flex-shrink:0;}
+.nav1-btn{padding:6px 10px;border:2px solid transparent;border-radius:4px;cursor:pointer;transition:.2s;white-space:nowrap;}
+.nav1-btn:hover{border-color:var(--g1);}
+.nav1-btn .b1{font-size:11px;color:var(--muted);}
+.nav1-btn .b2{font-size:13px;font-weight:700;}
+.nav1-cart{display:flex;align-items:center;gap:6px;padding:6px 12px;border:2px solid transparent;border-radius:4px;cursor:pointer;transition:.2s;}
+.nav1-cart:hover{border-color:var(--g1);}
+.cart-count{background:var(--g1);color:#000;font-size:13px;font-weight:800;min-width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;}
+
+/* ─── NAV BAR 2 ─── */
+.nav2{background:var(--nav2);padding:0 16px;display:flex;align-items:center;gap:4px;height:40px;border-bottom:1px solid rgba(255,255,255,.04);overflow-x:auto;scrollbar-width:none;}
+.nav2::-webkit-scrollbar{display:none;}
+.n2-all{display:flex;align-items:center;gap:5px;padding:4px 12px;border:2px solid transparent;border-radius:4px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap;transition:.2s;}
+.n2-all:hover,.n2-item:hover{border-color:var(--g1);color:var(--g1);}
+.n2-item{padding:4px 12px;border:2px solid transparent;border-radius:4px;cursor:pointer;font-size:13px;white-space:nowrap;transition:.2s;font-weight:500;}
+.n2-item.hot{color:var(--g1);font-weight:700;}
+
+/* ─── DELIVERY NOTICE ─── */
+.delivery-bar{background:linear-gradient(90deg,rgba(0,255,163,.08),rgba(0,213,255,.06));border-bottom:1px solid rgba(0,255,163,.1);padding:8px 16px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--sub);}
+.delivery-bar strong{color:var(--g1);}
+
+/* ─── HERO BANNER ─── */
+.hero-banner{position:relative;overflow:hidden;height:300px;margin:0;}
+.hero-slides{display:flex;width:100%;height:100%;transition:transform .6s ease;}
+.hero-slide{min-width:100%;height:300px;display:flex;align-items:center;padding:0 80px;position:relative;overflow:hidden;}
+.hs1{background:linear-gradient(135deg,#060d10,#0d2218);}
+.hs2{background:linear-gradient(135deg,#060d10,#0d1a2a);}
+.hs3{background:linear-gradient(135deg,#060d10,#1a0d20);}
+.hs-glow{position:absolute;width:500px;height:500px;border-radius:50%;opacity:.15;right:-100px;top:-100px;}
+.hs1 .hs-glow{background:#00ffa3;}
+.hs2 .hs-glow{background:#00d5ff;}
+.hs3 .hs-glow{background:#7b5cff;}
+.hs-content{position:relative;z-index:2;max-width:600px;}
+.hs-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(0,255,163,.1);border:1px solid rgba(0,255,163,.25);padding:5px 14px;border-radius:100px;font-size:11px;font-weight:700;color:var(--g1);margin-bottom:14px;letter-spacing:.5px;text-transform:uppercase;}
+.hs-content h2{font-family:'Syne',sans-serif;font-size:42px;font-weight:800;letter-spacing:-1.5px;line-height:1.05;margin-bottom:12px;}
+.hs-content h2 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hs-content p{font-size:14px;color:var(--sub);margin-bottom:20px;line-height:1.6;}
+.hs-btns{display:flex;gap:10px;}
+.hb1{background:var(--grad);padding:10px 26px;border-radius:8px;color:#000;font-weight:700;font-size:13px;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;box-shadow:0 0 25px rgba(0,255,163,.35);transition:.2s;}
+.hb1:hover{box-shadow:0 0 45px rgba(0,255,163,.55);transform:translateY(-1px);}
+.hb2{padding:10px 26px;border-radius:8px;color:var(--text);font-weight:600;font-size:13px;cursor:pointer;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);font-family:'DM Sans',sans-serif;transition:.2s;}
+.hb2:hover{border-color:var(--g1);color:var(--g1);}
+.slider-dots{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:7px;z-index:10;}
+.sdot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.25);cursor:pointer;transition:.3s;}
+.sdot.act{background:var(--g1);width:24px;border-radius:4px;}
+.slider-arrows{position:absolute;top:50%;transform:translateY(-50%);width:100%;display:flex;justify-content:space-between;padding:0 16px;z-index:10;}
+.sarr{width:36px;height:36px;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:.2s;}
+.sarr:hover{background:rgba(0,255,163,.2);border-color:var(--g1);}
+
+/* ─── MAIN LAYOUT ─── */
+.main-layout{display:flex;gap:0;max-width:100%;padding:16px;}
+/* SIDEBAR */
+.sidebar{width:220px;flex-shrink:0;margin-right:16px;}
+.sb-section{background:var(--dark3);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;}
+.sb-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.sb-item{display:flex;align-items:center;gap:8px;padding:6px 0;cursor:pointer;color:var(--sub);font-size:13px;transition:.2s;border-radius:4px;}
+.sb-item:hover,.sb-item.act{color:var(--g1);}
+.sb-item input[type=checkbox]{width:14px;height:14px;accent-color:var(--g1);cursor:pointer;flex-shrink:0;}
+.sb-item input[type=radio]{width:14px;height:14px;accent-color:var(--g1);cursor:pointer;flex-shrink:0;}
+.sb-count{margin-left:auto;font-size:11px;color:var(--muted);background:rgba(255,255,255,.05);padding:1px 7px;border-radius:100px;}
+.price-range{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
+.price-inputs{display:flex;gap:8px;align-items:center;}
+.price-inp{width:75px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:6px;padding:6px 8px;color:var(--text);font-size:12px;font-family:'DM Sans',sans-serif;outline:none;}
+.price-inp:focus{border-color:var(--g1);}
+.stars-row{display:flex;align-items:center;gap:6px;padding:5px 0;cursor:pointer;transition:.2s;}
+.stars-row:hover{color:var(--g1);}
+.stars{color:#ffc107;font-size:13px;}
+.apply-btn{width:100%;background:var(--grad);border:none;border-radius:6px;padding:8px;color:#000;font-weight:700;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:8px;transition:.2s;}
+.apply-btn:hover{opacity:.85;}
+
+/* ─── CONTENT AREA ─── */
+.content{flex:1;min-width:0;}
+
+/* DEALS OF THE DAY */
+.section-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.section-hd h2{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;}
+.section-hd .see-all{color:var(--g2);font-size:13px;font-weight:600;cursor:pointer;transition:.2s;}
+.section-hd .see-all:hover{color:var(--g1);}
+.timer{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);}
+.timer-box{background:var(--dark);border:1px solid rgba(0,255,163,.2);padding:4px 10px;border-radius:6px;font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--g1);min-width:36px;text-align:center;}
+
+/* DEALS SCROLL */
+.deals-scroll{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;scrollbar-width:thin;scrollbar-color:rgba(0,255,163,.3) transparent;}
+.deals-scroll::-webkit-scrollbar{height:3px;}
+.deals-scroll::-webkit-scrollbar-thumb{background:rgba(0,255,163,.3);border-radius:2px;}
+.deal-card{min-width:190px;background:var(--dark3);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:all .3s;flex-shrink:0;position:relative;}
+.deal-card:hover{border-color:rgba(0,255,163,.3);transform:translateY(-3px);box-shadow:0 16px 50px rgba(0,0,0,.4);}
+.deal-thumb{height:120px;display:flex;align-items:center;justify-content:center;font-size:40px;position:relative;}
+.dt1{background:linear-gradient(135deg,rgba(0,255,163,.08),rgba(0,213,255,.06));}
+.dt2{background:linear-gradient(135deg,rgba(123,92,255,.09),rgba(0,213,255,.07));}
+.dt3{background:linear-gradient(135deg,rgba(255,107,53,.09),rgba(255,193,7,.06));}
+.dt4{background:linear-gradient(135deg,rgba(0,213,255,.09),rgba(0,255,163,.07));}
+.deal-off{position:absolute;top:8px;left:8px;background:linear-gradient(90deg,#ff4b4b,#ff7b00);color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:100px;}
+.deal-body{padding:10px 12px;}
+.deal-body h4{font-size:12px;font-weight:600;line-height:1.4;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.deal-pr{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.deal-orig{font-size:11px;color:var(--muted);text-decoration:line-through;margin-top:1px;}
+.deal-progress{height:4px;background:rgba(255,255,255,.08);border-radius:2px;margin-top:8px;overflow:hidden;}
+.deal-fill{height:100%;background:var(--grad);border-radius:2px;}
+.deal-claimed{font-size:10px;color:var(--muted);margin-top:4px;}
+
+/* CATEGORY CARDS */
+.cat-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:12px;margin-bottom:20px;}
+.cat-card{background:var(--dark3);border:1px solid var(--border);border-radius:12px;padding:14px 10px;text-align:center;cursor:pointer;transition:.3s;}
+.cat-card:hover{border-color:rgba(0,255,163,.3);transform:translateY(-3px);}
+.cat-card.act{border-color:var(--g1);background:rgba(0,255,163,.06);}
+.cat-ic{font-size:28px;margin-bottom:8px;}
+.cat-card span{font-size:11px;color:var(--sub);font-weight:500;display:block;line-height:1.3;}
+
+/* RESULTS BAR */
+.results-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--dark3);border:1px solid var(--border);border-radius:10px;margin-bottom:14px;gap:12px;flex-wrap:wrap;}
+.rb-left{font-size:13px;color:var(--sub);}
+.rb-left strong{color:var(--g1);}
+.rb-right{display:flex;align-items:center;gap:10px;}
+.sort-select{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:6px;padding:6px 12px;color:var(--text);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;outline:none;}
+.sort-select:focus{border-color:var(--g1);}
+.view-btns{display:flex;gap:4px;}
+.vb{width:30px;height:30px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;transition:.2s;}
+.vb:hover,.vb.act{background:rgba(0,255,163,.1);border-color:rgba(0,255,163,.3);}
+
+/* PRODUCT GRID */
+.prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.prod-grid.list-view{grid-template-columns:1fr;}
+.prod-grid.list-view .prod-card{display:flex;gap:20px;}
+.prod-grid.list-view .pc-thumb{min-width:200px;height:180px;}
+.prod-grid.list-view .pc-body{flex:1;padding:20px;}
+/* PRODUCT CARD */
+.prod-card{background:var(--dark3);border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;transition:all .3s;position:relative;}
+.prod-card:hover{border-color:rgba(0,255,163,.25);box-shadow:0 20px 60px rgba(0,0,0,.5);transform:translateY(-3px);}
+.pc-badge-wrap{position:absolute;top:10px;left:10px;z-index:2;display:flex;flex-direction:column;gap:4px;}
+.pcb{font-size:9px;font-weight:700;padding:3px 8px;border-radius:100px;display:block;}
+.pcb-hot{background:rgba(255,75,75,.15);color:#ff6b6b;border:1px solid rgba(255,75,75,.25);}
+.pcb-new{background:rgba(0,255,163,.12);color:var(--g1);border:1px solid rgba(0,255,163,.2);}
+.pcb-top{background:rgba(123,92,255,.12);color:#a78bfa;border:1px solid rgba(123,92,255,.2);}
+.pcb-sale{background:rgba(255,193,7,.1);color:#ffc107;border:1px solid rgba(255,193,7,.2);}
+.pcb-wl{background:rgba(0,213,255,.1);color:var(--g2);border:1px solid rgba(0,213,255,.2);}
+.pc-wish{position:absolute;top:10px;right:10px;z-index:2;width:28px;height:28px;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.12);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;transition:.2s;opacity:0;}
+.prod-card:hover .pc-wish{opacity:1;}
+.pc-wish:hover{background:rgba(255,75,75,.2);border-color:rgba(255,75,75,.4);}
+.pc-thumb{height:180px;display:flex;align-items:center;justify-content:center;font-size:52px;position:relative;overflow:hidden;}
+.pct1{background:linear-gradient(135deg,rgba(0,255,163,.08),rgba(0,213,255,.07));}
+.pct2{background:linear-gradient(135deg,rgba(123,92,255,.09),rgba(0,213,255,.07));}
+.pct3{background:linear-gradient(135deg,rgba(255,107,53,.09),rgba(255,193,7,.06));}
+.pct4{background:linear-gradient(135deg,rgba(0,213,255,.09),rgba(0,255,163,.07));}
+.pct5{background:linear-gradient(135deg,rgba(0,255,163,.1),rgba(123,92,255,.08));}
+.pc-thumb::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 35% 35%,rgba(0,255,163,.12),transparent 60%);}
+.pc-thumb::after{content:'';position:absolute;bottom:0;left:0;right:0;height:40px;background:linear-gradient(to top,rgba(14,19,24,.8),transparent);}
+.pc-body{padding:12px 14px 14px;}
+.pc-seller{font-size:11px;color:var(--g2);font-weight:600;margin-bottom:4px;}
+.pc-body h3{font-size:13px;font-weight:600;line-height:1.45;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:var(--text);}
+.pc-body h3:hover{color:var(--g1);}
+.pc-stars{display:flex;align-items:center;gap:5px;margin-bottom:6px;}
+.star-val{color:#ffc107;font-size:12px;letter-spacing:-1px;}
+.star-count{font-size:11px;color:var(--g2);}
+.pc-price-row{display:flex;align-items:baseline;gap:8px;margin-bottom:10px;}
+.pc-price{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.pc-orig{font-size:12px;color:var(--muted);text-decoration:line-through;}
+.pc-off{font-size:11px;color:#ff6b6b;font-weight:700;}
+.pc-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;}
+.pc-tag{font-size:9px;padding:2px 7px;border-radius:4px;background:rgba(255,255,255,.05);color:var(--muted);border:1px solid rgba(255,255,255,.06);}
+.pc-actions{display:flex;gap:8px;}
+.pc-cart{flex:1;background:var(--grad);border:none;border-radius:8px;padding:9px;color:#000;font-weight:700;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:.2s;box-shadow:0 0 15px rgba(0,255,163,.2);}
+.pc-cart:hover{box-shadow:0 0 30px rgba(0,255,163,.4);}
+.pc-demo{padding:9px 12px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--sub);font-size:12px;font-weight:600;cursor:pointer;transition:.2s;font-family:'DM Sans',sans-serif;}
+.pc-demo:hover{border-color:var(--g2);color:var(--g2);}
+.pc-prime{display:flex;align-items:center;gap:4px;font-size:10px;margin-top:8px;color:var(--g2);}
+.pc-prime::before{content:'⚡';font-size:10px;}
+
+/* SPONSORED */
+.sponsored-label{font-size:10px;color:var(--muted);margin-top:6px;border-top:1px solid var(--border);padding-top:6px;}
+
+/* PAGINATION */
+.pagination{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:28px;padding:20px 0;}
+.pg-btn{width:36px;height:36px;background:var(--dark3);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;font-weight:600;transition:.2s;}
+.pg-btn:hover{border-color:var(--g1);color:var(--g1);}
+.pg-btn.act{background:var(--grad);color:#000;border-color:transparent;}
+.pg-btn.act span{background:none;-webkit-text-fill-color:#000;}
+
+/* FREQUENTLY BOUGHT TOGETHER */
+.fbt-box{background:var(--dark3);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:20px;}
+.fbt-products{display:flex;align-items:center;gap:12px;margin:14px 0;flex-wrap:wrap;}
+.fbt-item{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.fbt-thumb{width:70px;height:70px;border-radius:10px;background:rgba(0,255,163,.07);border:1px solid rgba(0,255,163,.12);display:flex;align-items:center;justify-content:center;font-size:28px;}
+.fbt-name{font-size:10px;color:var(--sub);text-align:center;max-width:70px;line-height:1.3;}
+.fbt-plus{font-size:20px;color:var(--muted);}
+.fbt-total{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.fbt-total-pr{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+
+/* BANNER STRIP */
+.banner-strip{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
+.banner-card{border-radius:14px;padding:24px 28px;position:relative;overflow:hidden;cursor:pointer;transition:.3s;}
+.banner-card:hover{transform:translateY(-2px);}
+.bc1{background:linear-gradient(135deg,rgba(0,255,163,.08),rgba(0,213,255,.06));border:1px solid rgba(0,255,163,.14);}
+.bc2{background:linear-gradient(135deg,rgba(123,92,255,.09),rgba(0,213,255,.07));border:1px solid rgba(123,92,255,.18);}
+.bc-glow{position:absolute;right:-60px;top:-60px;width:200px;height:200px;border-radius:50%;opacity:.15;}
+.bc1 .bc-glow{background:#00ffa3;}
+.bc2 .bc-glow{background:#7b5cff;}
+.banner-card h3{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;margin-bottom:8px;position:relative;}
+.banner-card p{font-size:13px;color:var(--sub);margin-bottom:14px;position:relative;max-width:320px;}
+.bc-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:#000;background:var(--grad);padding:8px 20px;border-radius:8px;position:relative;cursor:pointer;transition:.2s;}
+.bc-btn:hover{box-shadow:0 0 25px rgba(0,255,163,.4);}
+
+/* RECENTLY VIEWED */
+.rv-scroll{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin;scrollbar-color:rgba(0,255,163,.2) transparent;}
+.rv-scroll::-webkit-scrollbar{height:3px;}
+.rv-scroll::-webkit-scrollbar-thumb{background:rgba(0,255,163,.25);border-radius:2px;}
+.rv-card{min-width:140px;background:var(--dark3);border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:.3s;flex-shrink:0;}
+.rv-card:hover{border-color:rgba(0,255,163,.25);transform:translateY(-2px);}
+.rv-thumb{height:90px;display:flex;align-items:center;justify-content:center;font-size:32px;}
+.rv-body{padding:8px 10px;}
+.rv-body h5{font-size:11px;line-height:1.4;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.rv-pr{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+
+/* CART DRAWER */
+.cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;opacity:0;pointer-events:none;transition:.3s;backdrop-filter:blur(4px);}
+.cart-overlay.open{opacity:1;pointer-events:all;}
+.cart-drawer{position:fixed;right:0;top:0;height:100%;width:380px;background:var(--nav);border-left:1px solid rgba(0,255,163,.1);z-index:501;transform:translateX(100%);transition:.35s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;}
+.cart-drawer.open{transform:none;}
+.cart-hd{padding:20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.cart-hd h3{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;}
+.cart-close{width:32px;height:32px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:.2s;}
+.cart-close:hover{border-color:rgba(255,75,75,.4);color:#ff6b6b;}
+.cart-items{flex:1;overflow-y:auto;padding:16px;}
+.cart-item{display:flex;gap:12px;padding:14px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;}
+.ci-thumb{width:60px;height:60px;border-radius:10px;background:rgba(0,255,163,.07);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
+.ci-info{flex:1;}
+.ci-info h5{font-size:13px;font-weight:600;margin-bottom:4px;line-height:1.3;}
+.ci-info .ci-pr{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.ci-rm{color:var(--muted);font-size:12px;cursor:pointer;transition:.2s;margin-top:4px;display:inline-block;}
+.ci-rm:hover{color:#ff6b6b;}
+.cart-footer{padding:16px;border-top:1px solid var(--border);}
+.cart-subtotal{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.cart-subtotal span{font-size:14px;color:var(--sub);}
+.cart-subtotal strong{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.checkout-btn{width:100%;background:var(--grad);border:none;border-radius:10px;padding:14px;color:#000;font-weight:700;font-size:15px;font-family:'Syne',sans-serif;cursor:pointer;box-shadow:0 0 30px rgba(0,255,163,.3);transition:.2s;}
+.checkout-btn:hover{box-shadow:0 0 50px rgba(0,255,163,.5);}
+.cart-note{font-size:11px;color:var(--muted);text-align:center;margin-top:10px;}
+.cart-empty{text-align:center;padding:40px 20px;color:var(--muted);}
+.cart-empty .ce-ic{font-size:48px;margin-bottom:12px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--dark3);border:1px solid rgba(0,255,163,.25);border-radius:12px;padding:14px 20px;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;color:var(--text);z-index:1000;transform:translateY(80px);opacity:0;transition:.35s cubic-bezier(.2,.8,.2,1);box-shadow:0 20px 60px rgba(0,0,0,.5);}
+.toast.show{transform:none;opacity:1;}
+.toast-ic{font-size:18px;}
+
+/* FOOTER NAV */
+.back-to-top{background:var(--nav2);text-align:center;padding:14px;font-size:13px;font-weight:600;cursor:pointer;color:var(--sub);border-top:1px solid var(--border);transition:.2s;}
+.back-to-top:hover{color:var(--g1);}
+.footer-main{background:var(--nav);border-top:1px solid var(--border);padding:36px 16px;}
+.footer-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:30px;max-width:1400px;margin:0 auto 30px;}
+.footer-col h4{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:14px;color:var(--text);}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.footer-col ul li a{color:var(--muted);font-size:12px;transition:.2s;}
+.footer-col ul li a:hover{color:var(--g1);}
+.footer-bottom{max-width:1400px;margin:0 auto;border-top:1px solid var(--border);padding-top:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;}
+.footer-logo{display:flex;align-items:center;gap:8px;}
+.footer-logo img{height:30px;filter:drop-shadow(0 0 8px rgba(0,255,163,.35));}
+.footer-logo span{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;}
+.footer-logo span em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.footer-copy{font-size:11px;color:var(--muted);}
+.footer-links{display:flex;gap:14px;}
+.footer-links a{font-size:11px;color:var(--muted);transition:.2s;}
+.footer-links a:hover{color:var(--g1);}
+
+/* RESPONSIVE */
+@media(max-width:1200px){.prod-grid{grid-template-columns:repeat(3,1fr);}.cat-grid{grid-template-columns:repeat(6,1fr);}}
+@media(max-width:900px){.sidebar{display:none;}.prod-grid{grid-template-columns:repeat(2,1fr);}.cat-grid{grid-template-columns:repeat(4,1fr);}.footer-grid{grid-template-columns:repeat(2,1fr);}.banner-strip{grid-template-columns:1fr;}}
+@media(max-width:600px){.prod-grid{grid-template-columns:1fr;}.cat-grid{grid-template-columns:repeat(3,1fr);}.hero-slide{padding:0 24px;}.hs-content h2{font-size:28px;}.nav1-deliver{display:none;}}
+</style>
+</head>
+<body>
+
+<!-- CART OVERLAY -->
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-hd">
+    <h3>🛒 Your Cart</h3>
+    <div class="cart-close" onclick="toggleCart()">✕</div>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty"><div class="ce-ic">🛒</div><p style="font-size:14px;margin-bottom:6px;">Your cart is empty</p><p style="font-size:12px;color:var(--muted)">Add products to get started</p></div>
+  </div>
+  <div class="cart-footer">
+    <div class="cart-subtotal"><span>Subtotal</span><strong id="cartTotal">₹0</strong></div>
+    <button class="checkout-btn" onclick="showToast('Checkout feature — WhatsApp: +91 89566 25396 🚀')">Proceed to Checkout →</button>
+    <div class="cart-note">🔒 Secure checkout · Razorpay · UPI · Cards</div>
+  </div>
+</div>
+<div class="toast" id="toast"><span class="toast-ic">✅</span><span id="toastMsg">Added to cart!</span></div>
+
+<!-- NAV 1 -->
+<div class="nav1">
+  <div class="nav1-logo">
+    <img src="data:image/png;base64,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" alt="DigitGenie">
+    <span>Digit<em>Genie</em></span>
+  </div>
+  <div class="nav1-deliver">
+    <div class="d1">📍 Deliver to</div>
+    <div class="d2">India <span style="font-size:10px">▾</span></div>
+  </div>
+  <div class="search-bar">
+    <select class="search-cat" id="searchCatSelect">
+      <option>All Categories</option>
+      <option>AI Tools</option>
+      <option>FinTech</option>
+      <option>E-Commerce</option>
+      <option>Healthcare</option>
+      <option>EdTech</option>
+      <option>Real Estate</option>
+      <option>Restaurant Tech</option>
+      <option>HR & Payroll</option>
+      <option>Source Code</option>
+      <option>Flutter Apps</option>
+      <option>SaaS Tools</option>
+    </select>
+    <input class="search-input" type="text" placeholder="Search AI tools, CRM, ERP, Source Code..." id="mainSearch" oninput="liveSearch()">
+    <button class="search-btn" onclick="liveSearch()">🔍</button>
+  </div>
+  <div class="nav1-right">
+    <div class="nav1-btn" onclick="showToast('Seller Portal → Upload your app and start earning!')">
+      <div class="b1">Sell on</div>
+      <div class="b2">DigitGenie</div>
+    </div>
+    <div class="nav1-btn">
+      <div class="b1">Returns &</div>
+      <div class="b2">Orders</div>
+    </div>
+    <div class="nav1-btn">
+      <div class="b1">Hello, Login</div>
+      <div class="b2">Account ▾</div>
+    </div>
+    <div class="nav1-cart" onclick="toggleCart()">
+      <div class="cart-count" id="cartCountBadge">0</div>
+      <div class="b2" style="font-size:14px;">🛒 Cart</div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV 2 -->
+<div class="nav2">
+  <div class="n2-all" onclick="setAllCat()">☰ All</div>
+  <div class="n2-item hot" onclick="filterByNav('ai')">🔥 AI Tools</div>
+  <div class="n2-item" onclick="filterByNav('ft')">💳 FinTech CRM</div>
+  <div class="n2-item" onclick="filterByNav('ec')">🛒 E-Commerce</div>
+  <div class="n2-item" onclick="filterByNav('qc')">⚡ Quick Commerce</div>
+  <div class="n2-item" onclick="filterByNav('hc')">🏥 Healthcare</div>
+  <div class="n2-item" onclick="filterByNav('ed')">🎓 EdTech</div>
+  <div class="n2-item" onclick="filterByNav('re')">🏢 Real Estate</div>
+  <div class="n2-item" onclick="filterByNav('rs')">🍔 Restaurant</div>
+  <div class="n2-item" onclick="filterByNav('hr')">👔 HR & Payroll</div>
+  <div class="n2-item" onclick="filterByNav('sc')">💻 Source Code</div>
+  <div class="n2-item" onclick="filterByNav('fl')">📱 Flutter Apps</div>
+  <div class="n2-item" onclick="filterByNav('sa')">🧠 SaaS Tools</div>
+  <div class="n2-item" onclick="filterByNav('lg')">🚚 Logistics</div>
+  <div class="n2-item hot" onclick="showToast('Today\'s Deals — Best prices on top software!')">Today\'s Deals</div>
+  <div class="n2-item" onclick="showToast('Sell on DigitGenie — Upload your app and earn 70%!')">Sell Your App</div>
+</div>
+
+<div class="delivery-bar">
+  ⚡ <strong>Free Deployment Support</strong> on all orders above ₹49,999 · &nbsp;
+  🔒 <strong>Source Code Guaranteed</strong> · &nbsp;
+  ✅ <strong>White-Label Ready</strong> · &nbsp;
+  📞 Support: <strong>+91 89566 25396</strong>
+</div>
+
+<!-- HERO BANNER SLIDER -->
+<div style="position:relative;">
+  <div class="hero-banner">
+    <div class="hero-slides" id="heroSlides">
+      <div class="hero-slide hs1">
+        <div class="hs-glow"></div>
+        <div class="hs-content">
+          <div class="hs-badge">🔥 Best Seller · 47 Sales This Month</div>
+          <h2>AI Voice Calling<br><em>Agent Pro</em></h2>
+          <p>Automated outbound & inbound calling with natural language AI. Hindi, English & Hinglish support.</p>
+          <div class="hs-btns">
+            <button class="hb1" onclick="addToCart('AI Voice Calling Agent',74999,'🤖')">Add to Cart — ₹74,999</button>
+            <button class="hb2">View Demo →</button>
+          </div>
+        </div>
+      </div>
+      <div class="hero-slide hs2">
+        <div class="hs-glow"></div>
+        <div class="hs-content">
+          <div class="hs-badge">👑 Enterprise Choice</div>
+          <h2>Complete Loan<br><em>CRM Enterprise</em></h2>
+          <p>End-to-end loan origination, processing & collection. NBFC, DSA & MFI ready with 40+ modules.</p>
+          <div class="hs-btns">
+            <button class="hb1" onclick="addToCart('Loan CRM Enterprise',149999,'💳')">Add to Cart — ₹1,49,999</button>
+            <button class="hb2">Book Demo →</button>
+          </div>
+        </div>
+      </div>
+      <div class="hero-slide hs3">
+        <div class="hs-glow"></div>
+        <div class="hs-content">
+          <div class="hs-badge">✨ New Launch · 2026</div>
+          <h2>Sell Your Apps<br><em>Earn 70% Revenue</em></h2>
+          <p>India's largest AI software marketplace. Upload once — sell to 3,400+ buyers. Start free today.</p>
+          <div class="hs-btns">
+            <button class="hb1" onclick="showToast('Seller portal coming soon! WhatsApp: +91 89566 25396')">Start Selling Free</button>
+            <button class="hb2">View Plans →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slider-arrows">
+    <div class="sarr" onclick="changeSlide(-1)">‹</div>
+    <div class="sarr" onclick="changeSlide(1)">›</div>
+  </div>
+  <div class="slider-dots">
+    <div class="sdot act" onclick="goSlide(0)"></div>
+    <div class="sdot" onclick="goSlide(1)"></div>
+    <div class="sdot" onclick="goSlide(2)"></div>
+  </div>
+</div>
+
+<div class="main-layout">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-section">
+      <div class="sb-title">Department</div>
+      <div class="sb-item act" onclick="filterSidebar('all',this)"><span>✦ All Products</span><span class="sb-count">200+</span></div>
+      <div class="sb-item" onclick="filterSidebar('ai',this)"><span>🤖 AI & Automation</span><span class="sb-count">85</span></div>
+      <div class="sb-item" onclick="filterSidebar('ft',this)"><span>💳 FinTech</span><span class="sb-count">62</span></div>
+      <div class="sb-item" onclick="filterSidebar('ec',this)"><span>🛒 E-Commerce</span><span class="sb-count">48</span></div>
+      <div class="sb-item" onclick="filterSidebar('qc',this)"><span>⚡ Quick Commerce</span><span class="sb-count">31</span></div>
+      <div class="sb-item" onclick="filterSidebar('hc',this)"><span>🏥 Healthcare</span><span class="sb-count">40</span></div>
+      <div class="sb-item" onclick="filterSidebar('ed',this)"><span>🎓 EdTech</span><span class="sb-count">35</span></div>
+      <div class="sb-item" onclick="filterSidebar('re',this)"><span>🏢 Real Estate</span><span class="sb-count">28</span></div>
+      <div class="sb-item" onclick="filterSidebar('rs',this)"><span>🍔 Restaurant</span><span class="sb-count">33</span></div>
+      <div class="sb-item" onclick="filterSidebar('hr',this)"><span>👔 HR & Payroll</span><span class="sb-count">22</span></div>
+      <div class="sb-item" onclick="filterSidebar('sc',this)"><span>💻 Source Code</span><span class="sb-count">120</span></div>
+      <div class="sb-item" onclick="filterSidebar('fl',this)"><span>📱 Flutter Apps</span><span class="sb-count">55</span></div>
+    </div>
+    <div class="sb-section">
+      <div class="sb-title">Price Range</div>
+      <div class="price-range">
+        <div class="sb-item"><input type="radio" name="pr" checked> Under ₹25,000</div>
+        <div class="sb-item"><input type="radio" name="pr"> ₹25,000 – ₹75,000</div>
+        <div class="sb-item"><input type="radio" name="pr"> ₹75,000 – ₹1,50,000</div>
+        <div class="sb-item"><input type="radio" name="pr"> Above ₹1,50,000</div>
+        <div class="price-inputs">
+          <input class="price-inp" type="text" placeholder="Min">
+          <span style="color:var(--muted)">—</span>
+          <input class="price-inp" type="text" placeholder="Max">
+        </div>
+        <button class="apply-btn" onclick="showToast('Price filter applied!')">Apply</button>
+      </div>
+    </div>
+    <div class="sb-section">
+      <div class="sb-title">Avg. Customer Review</div>
+      <div class="stars-row"><span class="stars">★★★★★</span><span style="font-size:12px;color:var(--sub)">& Up</span><span class="sb-count">184</span></div>
+      <div class="stars-row"><span class="stars">★★★★</span><span style="font-size:12px;color:var(--sub)">★ & Up</span><span class="sb-count">256</span></div>
+      <div class="stars-row"><span class="stars">★★★</span><span style="font-size:12px;color:var(--sub)">★★ & Up</span><span class="sb-count">312</span></div>
+    </div>
+    <div class="sb-section">
+      <div class="sb-title">Product Features</div>
+      <div class="sb-item"><input type="checkbox" checked> White-Label Ready</div>
+      <div class="sb-item"><input type="checkbox" checked> Source Code Included</div>
+      <div class="sb-item"><input type="checkbox"> Mobile App (Flutter)</div>
+      <div class="sb-item"><input type="checkbox"> AI / GPT Powered</div>
+      <div class="sb-item"><input type="checkbox"> WhatsApp Integrated</div>
+      <div class="sb-item"><input type="checkbox"> Multi-tenant SaaS</div>
+      <div class="sb-item"><input type="checkbox"> Payment Gateway</div>
+    </div>
+    <div class="sb-section">
+      <div class="sb-title">Tech Stack</div>
+      <div class="sb-item"><input type="checkbox"> React + Node.js</div>
+      <div class="sb-item"><input type="checkbox"> Flutter (Mobile)</div>
+      <div class="sb-item"><input type="checkbox"> Laravel + Vue</div>
+      <div class="sb-item"><input type="checkbox"> Python / FastAPI</div>
+      <div class="sb-item"><input type="checkbox"> Next.js</div>
+      <div class="sb-item"><input type="checkbox"> Android / iOS Native</div>
+    </div>
+    <div class="sb-section" style="background:linear-gradient(135deg,rgba(0,255,163,.05),rgba(0,213,255,.04));border-color:rgba(0,255,163,.15);">
+      <div style="text-align:center;">
+        <div style="font-size:28px;margin-bottom:8px;">💰</div>
+        <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:6px;">Sell Your Software</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.6;">Earn 70% revenue. 3,400+ buyers waiting.</div>
+        <button class="apply-btn" onclick="showToast('Contact us on WhatsApp: +91 89566 25396 to start selling!')">Start Selling →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- DEALS OF THE DAY -->
+    <div style="margin-bottom:20px;">
+      <div class="section-hd">
+        <h2>⚡ Deals of the Day</h2>
+        <div style="display:flex;align-items:center;gap:16px;">
+          <div class="timer">Ends in: <span class="timer-box" id="th">08</span>:<span class="timer-box" id="tm">47</span>:<span class="timer-box" id="ts">23</span></div>
+          <span class="see-all" onclick="showToast('Showing all deals!')">See all deals →</span>
+        </div>
+      </div>
+      <div class="deals-scroll">
+        <div class="deal-card" onclick="addToCart('AI Chatbot SaaS',29999,'💬')"><div class="deal-thumb dt1"><span class="deal-off">-40%</span>💬</div><div class="deal-body"><h4>AI WhatsApp Chatbot SaaS</h4><div class="deal-pr">₹29,999</div><div class="deal-orig">₹49,999</div><div class="deal-progress"><div class="deal-fill" style="width:73%"></div></div><div class="deal-claimed">73% claimed</div></div></div>
+        <div class="deal-card" onclick="addToCart('Admin Dashboard',9999,'💻')"><div class="deal-thumb dt4"><span class="deal-off">-50%</span>💻</div><div class="deal-body"><h4>React Admin Dashboard Kit</h4><div class="deal-pr">₹9,999</div><div class="deal-orig">₹19,999</div><div class="deal-progress"><div class="deal-fill" style="width:88%"></div></div><div class="deal-claimed">88% claimed</div></div></div>
+        <div class="deal-card" onclick="addToCart('Restaurant POS',44999,'🍔')"><div class="deal-thumb dt3"><span class="deal-off">-30%</span>🍔</div><div class="deal-body"><h4>Restaurant POS + QR Menu</h4><div class="deal-pr">₹44,999</div><div class="deal-orig">₹64,999</div><div class="deal-progress"><div class="deal-fill" style="width:55%"></div></div><div class="deal-claimed">55% claimed</div></div></div>
+        <div class="deal-card" onclick="addToCart('EdTech LMS',49999,'🎓')"><div class="deal-thumb dt2"><span class="deal-off">-35%</span>🎓</div><div class="deal-body"><h4>Complete LMS Platform</h4><div class="deal-pr">₹49,999</div><div class="deal-orig">₹76,999</div><div class="deal-progress"><div class="deal-fill" style="width:62%"></div></div><div class="deal-claimed">62% claimed</div></div></div>
+        <div class="deal-card" onclick="addToCart('Salon Booking App',19999,'💅')"><div class="deal-thumb dt1"><span class="deal-off">-45%</span>💅</div><div class="deal-body"><h4>Salon Booking App + CRM</h4><div class="deal-pr">₹19,999</div><div class="deal-orig">₹36,999</div><div class="deal-progress"><div class="deal-fill" style="width:40%"></div></div><div class="deal-claimed">40% claimed</div></div></div>
+        <div class="deal-card" onclick="addToCart('Grocery Delivery App',54999,'🛒')"><div class="deal-thumb dt4"><span class="deal-off">-25%</span>🛒</div><div class="deal-body"><h4>Grocery Delivery App</h4><div class="deal-pr">₹54,999</div><div class="deal-orig">₹72,999</div><div class="deal-progress"><div class="deal-fill" style="width:81%"></div></div><div class="deal-claimed">81% claimed</div></div></div>
+      </div>
+    </div>
+
+    <!-- CATEGORY QUICK LINKS -->
+    <div class="cat-grid" id="catGrid">
+      <div class="cat-card act" onclick="filterByCat('all',this)"><div class="cat-ic">✦</div><span>All Products</span></div>
+      <div class="cat-card" onclick="filterByCat('ai',this)"><div class="cat-ic">🤖</div><span>AI Tools</span></div>
+      <div class="cat-card" onclick="filterByCat('ft',this)"><div class="cat-ic">💳</div><span>FinTech</span></div>
+      <div class="cat-card" onclick="filterByCat('ec',this)"><div class="cat-ic">🛒</div><span>E-Commerce</span></div>
+      <div class="cat-card" onclick="filterByCat('qc',this)"><div class="cat-ic">⚡</div><span>Quick Commerce</span></div>
+      <div class="cat-card" onclick="filterByCat('hc',this)"><div class="cat-ic">🏥</div><span>Healthcare</span></div>
+      <div class="cat-card" onclick="filterByCat('ed',this)"><div class="cat-ic">🎓</div><span>EdTech</span></div>
+      <div class="cat-card" onclick="filterByCat('re',this)"><div class="cat-ic">🏢</div><span>Real Estate</span></div>
+      <div class="cat-card" onclick="filterByCat('rs',this)"><div class="cat-ic">🍔</div><span>Restaurant</span></div>
+      <div class="cat-card" onclick="filterByCat('hr',this)"><div class="cat-ic">👔</div><span>HR & Payroll</span></div>
+      <div class="cat-card" onclick="filterByCat('sc',this)"><div class="cat-ic">💻</div><span>Source Code</span></div>
+      <div class="cat-card" onclick="filterByCat('fl',this)"><div class="cat-ic">📱</div><span>Flutter Apps</span></div>
+      <div class="cat-card" onclick="filterByCat('sa',this)"><div class="cat-ic">🧠</div><span>SaaS Tools</span></div>
+      <div class="cat-card" onclick="filterByCat('lg',this)"><div class="cat-ic">🚚</div><span>Logistics</span></div>
+      <div class="cat-card" onclick="filterByCat('mf',this)"><div class="cat-ic">🏭</div><span>Manufacturing</span></div>
+      <div class="cat-card" onclick="filterByCat('at',this)"><div class="cat-ic">🚗</div><span>Automobile</span></div>
+    </div>
+
+    <!-- RESULTS BAR -->
+    <div class="results-bar">
+      <div class="rb-left">1–24 of <strong id="resultCount">200+</strong> results for <strong id="resultQuery">"AI Software India"</strong></div>
+      <div class="rb-right">
+        <span style="font-size:12px;color:var(--muted)">Sort by:</span>
+        <select class="sort-select" onchange="sortProducts(this.value)">
+          <option value="popular">Most Popular</option>
+          <option value="newest">Newest Arrivals</option>
+          <option value="priceLow">Price: Low to High</option>
+          <option value="priceHigh">Price: High to Low</option>
+          <option value="rating">Avg. Customer Review</option>
+        </select>
+        <div class="view-btns">
+          <div class="vb act" id="gridViewBtn" onclick="setView('grid')" title="Grid View">⊞</div>
+          <div class="vb" id="listViewBtn" onclick="setView('list')" title="List View">☰</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BANNER STRIP -->
+    <div class="banner-strip">
+      <div class="banner-card bc1">
+        <div class="bc-glow"></div>
+        <h3>🚀 New Seller Offer</h3>
+        <p>Upload your first app FREE. Get featured on homepage for 30 days + free WhatsApp promotion.</p>
+        <div class="bc-btn" onclick="showToast('Seller offer! WhatsApp us: +91 89566 25396')">Start Selling →</div>
+      </div>
+      <div class="banner-card bc2">
+        <div class="bc-glow"></div>
+        <h3>💎 Bundle Deals</h3>
+        <p>Buy any 3 products and get 25% OFF. Mix & match AI tools, CRM and eCommerce platforms.</p>
+        <div class="bc-btn" onclick="showToast('Bundle deals active! Add 3 products to cart for discount.')">Explore Bundles →</div>
+      </div>
+    </div>
+
+    <!-- PRODUCT GRID -->
+    <div class="prod-grid" id="prodGrid">
+
+      <div class="prod-card" data-cat="ai" data-price="74999" data-rating="49">
+        <div class="pc-badge-wrap"><span class="pcb pcb-hot">🔥 Best Seller</span><span class="pcb pcb-wl">✓ White-Label</span></div>
+        <div class="pc-wish" title="Wishlist">♡</div>
+        <div class="pc-thumb pct1">🤖</div>
+        <div class="pc-body">
+          <div class="pc-seller">by RahulDev Studios</div>
+          <h3>AI Voice Calling Agent Pro — Hindi, English & Hinglish Support</h3>
+          <div class="pc-stars"><span class="star-val">★★★★★</span><span class="star-count">(47 reviews)</span></div>
+          <div class="pc-price-row"><span class="pc-price">₹74,999</span><span class="pc-orig">₹1,24,999</span><span class="pc-off">-40%</span></div>
+          <div class="pc-tags"><span class="pc-tag">GPT-4 Powered</span><span class="pc-tag">Source Code</span><span class="pc-tag">API Access</span><span class="pc-tag">White-Label</span></div>
+          <div class="pc-actions">
+            <button class="pc-cart" onclick="addToCart('AI Voice Calling Agent',74999,'🤖')">Add to Cart</button>
+            <button class="pc-demo" onclick="showToast('Demo: Contact +91 89566 25396')">Demo</button>
+          </div>
+          <div class="pc-prime">Free deployment support included</div>
+          <div class="sponsored-label">Sponsored · AI Tools</div>
+        </div>
+      </div>
+
+      <div class="prod-card" data-cat="ft" data-price="149999" data-rating="48">
+        <div class="pc-badge-wrap"><span class="pcb pcb-top">👑 Top Rated</span><span class="pcb pcb-wl">✓ White-Label</span></div>
+        <div class="pc-wish">♡</div>
+        <div class="pc-thumb pct2">💳</div>
+        <div class="pc-body">
+          <div class="pc-seller">by FinSoft Solutions</div>
+          <h3>Complete Loan CRM Enterprise v4 — NBFC, DSA & MFI Ready</h3>
+          <div class="pc-stars"><span class="star-val">★★★★★</span><span class="star-count">(31 reviews)</span></div>
+          <div class="pc-price-row"><span class="pc-price">₹1,49,999</span><span class="pc-orig">₹2,49,999</span><span class="pc-off">-40%</span></div>
+          <div class="pc-tags"><span class="pc-tag">NBFC Ready</span><span class="pc-tag">Flutter App</span><span class="pc-tag">GST Invoice</span><span class="pc-tag">40+ Modules</span></div>
+          <div class="pc-actions">
+            <button class="pc-cart" onclick="addToCart('Loan CRM Enterprise',149999,'💳')">Add to Cart</button>
+            <button class="pc-demo">Demo</button>
+          </div>
+          <div class="pc-prime">Source code + 6 month support</div>
+        </div>
+      </div>
+
+      <div class="prod-card" data-cat="ec" data-price="59999" data-rating="47">
+        <div class="pc-badge-wrap"><span class="pcb pcb-new">✨ New Launch</span></div>
+        <div class="pc-wish">♡</div>
+        <div class="pc-thumb pct4">🛒</div>
+        <div class="pc-body">
+          <div class="pc-seller">by WebMagic Labs</div>
+          <h3>D2C Multi-Vendor eCommerce Platform with WhatsApp Commerce</h3>
+          <div class="pc-stars"><span class="star-val">★★★★☆</span><span class="star-count">(58 reviews)</span></div>
+          <div class="pc-price-row"><span class="pc-price">₹59,999</span><span class="pc-orig">₹89,999</span><span class="pc-off">-33%</span></div>
+          <div class="pc-tags"><span class="pc-tag">React</span><span class="pc-tag">Mobile App</span><span class="pc-tag">Payment GW</span></div>
+          <div class="pc-actions">
+            <button class="pc-cart" onclick="addToCart('D2C Platform',59999,'🛒')">Add to Cart</button>
+            <button class="pc-demo">Demo</button>
+          </div>
+          <div class="pc-prime">Razorpay + UPI pre-integrated</div>
+        </div>
+      </div>
+
+      <div class="prod-card" data-cat="ai" data-price="29999" data-rating="49">
+        <div class="pc-badge-wrap"><span class="pcb pcb-hot">🔥 Hot</span><span class="pcb pcb-wl">✓ SaaS Ready</span></div>
+        <div class="pc-wish">♡</div>
+        <div class="pc-thumb pct1">💬</div>
+        <div class="pc-body">
+          <div class="pc-seller">by BotFactory India</div>
+          <h3>AI WhatsApp Chatbot SaaS Platform — Multi-Client Ready</h3>
+          <div class="pc-stars"><span class="star-val">★★★★★</span><span class="star-count">(83 reviews)</span></div>
+          <div class="pc-price-row"><span class="pc-price">₹29,999</span><span class="pc-orig">₹49,999</span><span class="pc-off">-40%</span></div>
+          <div class="pc-tags"><span class="pc-tag">GPT-4</span><span class="pc-tag">WhatsApp API</span><span class="pc-tag">CRM Sync</span></div>
+          <div class="pc-actions">
+            <button class="pc-cart" onclick="addToCart('AI WhatsApp Chatbot',29999,'💬')">Add to Cart</button>
+            <button class="pc-demo">Demo</button>
+          </div>
+          <div class="pc-prime">Free WhatsApp API setup included</div>
+          <div class="sponsored-label">Sponsored · AI Tools</div>
+        </div>
+      </div>
+
+      <div class="prod-card" data-cat="qc" data-price="89999" data-rating="48">
+        <div class="pc-badge-wrap"><span class="pcb pcb-hot">🔥 Trending</span></div>
+        <div class="pc-wish">♡</div>
+        <div class="pc-thumb pct3">⚡</div>
+        <div class="pc-body">
+          <div class="pc-seller">by SpeedTech India</div>
+          <h3>10-Minute Delivery Platform — Zepto & Blinkit Clone</h3>
+          <div class="pc-stars"><span class="star-val">★★★★★</span><span class="star-count">(22 reviews)</span></div>
+          <div class="pc-price-row"><span class="pc-price">₹89,999</span><span class="pc-orig">₹1,39,999</span><span class="pc-off">-36%</span></div>
+          <div class="pc-tags"><span class="pc-tag">Flutter App</span><span class="pc-tag">Live Tracking</span><span class="pc-tag">Dark Store</span></div>
+          <div class="pc-actions">
+            <button class="pc-cart" onclick="addToCart('Delivery Platform',89999,'⚡')">Add to Cart</button>
+            <button class="pc-demo">Demo</button>
+          </div>
+          <div class="pc-prime">Rider app + admin panel included</div>
+        </div>
+      </div>
+
+      <div class="prod-card" data-cat="hc" data-price="199999" data-rating="50">
+        <div class="pc-badge-wrap"><span class="pcb pcb-top">👑 #1 in Healthcare</span></div>
+        <div class="pc-wish">♡</div>
+        <div class="pc-thumb pct2">🏥</div>
+        <div class="pc-body">
+          <div class="pc-seller">by MediSoft Pro</div>
+          <h3>Hospital Management ERP — OPD, IPD, Pharmacy, Lab & Telemedicine</h3>
+          <div class="pc-stars"><span class="star-val">★★★★★</span><span class="star-count">(18 reviews)</span></div>
+          <div class="pc-price-row"><span class="pc-price">₹1,99,999</span><span class="pc-orig">₹3,49,999</span><span class="pc-off">-43%</span></div>
+          <div class="pc-tags"><span class="pc-tag">NABH Compliant</span><span class="pc-tag">Telemedicine</span><span class="pc-tag">Lab LIMS</span></div>
+          <div class="pc-actions">
+            <button class="pc-cart" onclick="addToCart('Hospital ERP',199999,'🏥')">Add to Cart</button>
+            <button class="pc-demo">Demo</button>
+          </div>
+          <div class="pc-prime">Free on-site demo available</div>
+        </div>
+      </div>
+
+      <div class="prod-card" data-cat="ed" data-price="49999" data-rating="46">
+        <div class="pc-badge-wrap"><span class="pcb pcb-sale">% Limited Offer</span></div>
+        <div class="pc-wish">♡</div>
+        <div class="pc-thumb pct4">🎓</div>
+        <div class="pc-body">
+          <div class="pc-seller">by EduTech Hub</div>
+          <h3>Complete LMS Platform — Live Classes, Quiz, Certificates & Mobile App</h3>
+          <div class="pc-stars"><span class="star-val">★★★★☆</span><span class="star-count">(39 reviews)</span></div>
+          <div class="pc-price-row"><span class="pc-price">₹49,999</span><span class="pc-orig">₹76,999</span><span class="pc-off">-35%</span></div>
+          <div class="pc-tags"><span class="pc-tag">Live Classes</span><span class="pc-tag">Mobile App</span><span class="pc-tag">Zoom Integration</span></div>
+          <div class="pc-actions">
+            <button class="pc-cart" onclick="addToCart('LMS Platform',49999,'🎓')">Add to Cart</button>
+            <button class="pc-demo">Demo</button>
+          </div>
+          <div class="pc-prime">100+ course templates included</div>
+        </div>
+      </div>
+
+      <div class="prod-card" data-cat="re" data-price="124999" data-rating="49">
+        <div class="pc-badge-wrap"><span class="pcb pcb-new">✨ New</span><span class="pcb pcb-wl">✓ White-Label</span></div>
+        <div class="pc-wish">♡</div>
+        <div class="pc-thumb pct5">🏢</div>
+        <div class="pc-body">
+          <div class="pc-seller">by PropTech India</div>
+          <h3>Builder ERP + Property CRM — Broker Portal & Customer App</h3>
+          <div class="pc-stars"><span class="star-val">★★★★★</span><span class="star-count">(27 reviews)</span></div>
+          <div class="pc-price-row"><span class="pc-price">₹1,24,999</span><span class="pc-orig">₹1,99,999</span><span class="pc-off">-37%</span></div>
+          <div class="pc-tags"><span class="pc-tag">CRM</span><span class="pc-tag">Customer App</span><span class="pc-tag">Payment Track</span></div>
+          <div class="pc-actions">
+            <button class="pc-cart" onclick="addToCart('Builder ERP',124999,'🏢')">Add to Cart</button>
+            <button class="pc-demo">Demo</button>
+          </div>
+          <div class="pc-prime">Broker & agent panel included</div>
+        </div>
+      </div>
+
+      <div class="prod-card" data-cat="rs" data-price="44999" data-rating="48">
+        <div class="pc-badge-wrap"><span class="pcb pcb-hot">🔥 Hot</span></div>
+        <div class="pc-wish">♡</div>
+        <div class="pc-thumb pct3">🍔</div>
+        <div class="pc-body">
+          <div class="pc-seller">by FoodTech Studio</div>
+          <h3>Restaurant POS + QR Menu + Food Delivery App + Cloud Kitchen ERP</h3>
+          <div class="pc-stars"><span class="star-val">★★★★★</span><span class="star-count">(64 reviews)</span></div>
+          <div class="pc-price-row"><span class="pc-price">₹44,999</span><span class="pc-orig">₹69,999</span><span class="pc-off">-36%</span></div>
+          <div class="pc-tags"><span class="pc-tag">QR Menu</span><span class="pc-tag">Delivery App</span><span class="pc-tag">Inventory</span></div>
+          <div class="pc-actions">
+            <button class="pc-cart" onclick="addToCart('Restaurant POS',44999,'🍔')">Add to Cart</button>
+            <button class="pc-demo">Demo</button>
+          </div>
+          <div class="pc-prime">Swiggy/Zomato integration ready</div>
+        </div>
+      </div>
+
+      <div class="prod-card" data-cat="hr" data-price="69999" data-rating="47">
+        <div class="pc-badge-wrap"><span class="pcb pcb-new">✨ Updated</span></div>
+        <div class="pc-wish">♡</div>
+        <div class="pc-thumb pct2">👔</div>
+        <div class="pc-body">
+          <div class="pc-seller">by HRMaster Labs</div>
+          <h3>Complete HRMS — Payroll, Attendance, Leave, Appraisal & Employee App</h3>
+          <div class="pc-stars"><span class="star-val">★★★★☆</span><span class="star-count">(35 reviews)</span></div>
+          <div class="pc-price-row"><span class="pc-price">₹69,999</span><span class="pc-orig">₹1,09,999</span><span class="pc-off">-36%</span></div>
+          <div class="pc-tags"><span class="pc-tag">Payroll</span><span class="pc-tag">Biometric Sync</span><span class="pc-tag">ESI/PF</span></div>
+          <div class="pc-actions">
+            <button class="pc-cart" onclick="addToCart('HRMS Platform',69999,'👔')">Add to Cart</button>
+            <button class="pc-demo">Demo</button>
+          </div>
+          <div class="pc-prime">ESI/PF auto-calculation included</div>
+        </div>
+      </div>
+
+      <div class="prod-card" data-cat="sc" data-price="9999" data-rating="50">
+        <div class="pc-badge-wrap"><span class="pcb pcb-top">👑 #1 Source Code</span></div>
+        <div class="pc-wish">♡</div>
+        <div class="pc-thumb pct4">💻</div>
+        <div class="pc-body">
+          <div class="pc-seller">by CodeKraft India</div>
+          <h3>Premium React Admin Dashboard — Dark Theme, RBAC, Charts & Auth</h3>
+          <div class="pc-stars"><span class="star-val">★★★★★</span><span class="star-count">(124 reviews)</span></div>
+          <div class="pc-price-row"><span class="pc-price">₹9,999</span><span class="pc-orig">₹19,999</span><span class="pc-off">-50%</span></div>
+          <div class="pc-tags"><span class="pc-tag">React</span><span class="pc-tag">Node.js</span><span class="pc-tag">MongoDB</span><span class="pc-tag">TypeScript</span></div>
+          <div class="pc-actions">
+            <button class="pc-cart" onclick="addToCart('Admin Dashboard Kit',9999,'💻')">Add to Cart</button>
+            <button class="pc-demo">Preview</button>
+          </div>
+          <div class="pc-prime">Lifetime updates included</div>
+          <div class="sponsored-label">Sponsored</div>
+        </div>
+      </div>
+
+      <div class="prod-card" data-cat="ai" data-price="24999" data-rating="48">
+        <div class="pc-badge-wrap"><span class="pcb pcb-sale">% 50% Off Today</span></div>
+        <div class="pc-wish">♡</div>
+        <div class="pc-thumb pct1">🧠</div>
+        <div class="pc-body">
+          <div class="pc-seller">by AIForge Labs</div>
+          <h3>AI Content Generator SaaS — Blog, Social Media, Ads & SEO in Hindi/English</h3>
+          <div class="pc-stars"><span class="star-val">★★★★★</span><span class="star-count">(91 reviews)</span></div>
+          <div class="pc-price-row"><span class="pc-price">₹24,999</span><span class="pc-orig">₹49,999</span><span class="pc-off">-50%</span></div>
+          <div class="pc-tags"><span class="pc-tag">GPT-4 + Claude</span><span class="pc-tag">Multi-Language</span><span class="pc-tag">SaaS</span></div>
+          <div class="pc-actions">
+            <button class="pc-cart" onclick="addToCart('AI Content Generator',24999,'🧠')">Add to Cart</button>
+            <button class="pc-demo">Demo</button>
+          </div>
+          <div class="pc-prime">1000+ AI templates included</div>
+        </div>
+      </div>
+
+    </div><!-- end prod-grid -->
+
+    <!-- FREQUENTLY BOUGHT TOGETHER -->
+    <div class="fbt-box" style="margin-top:20px;">
+      <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:4px;">Frequently Bought Together</div>
+      <div style="font-size:12px;color:var(--muted);">Customers who buy AI Voice Calling Agent also purchase:</div>
+      <div class="fbt-products">
+        <div class="fbt-item"><div class="fbt-thumb">🤖</div><div class="fbt-name">AI Calling Agent</div></div>
+        <div class="fbt-plus">+</div>
+        <div class="fbt-item"><div class="fbt-thumb">💬</div><div class="fbt-name">WhatsApp Chatbot</div></div>
+        <div class="fbt-plus">+</div>
+        <div class="fbt-item"><div class="fbt-thumb">📊</div><div class="fbt-name">CRM Dashboard</div></div>
+      </div>
+      <div class="fbt-total">
+        <div><span style="font-size:13px;color:var(--sub)">Total: </span><span class="fbt-total-pr">₹1,14,997</span><span style="font-size:12px;color:#ff6b6b;margin-left:8px;">Save ₹25,000 (18%)</span></div>
+        <button class="hb1" onclick="addToCart('Bundle: AI Calling + Chatbot + CRM',114997,'📦')">Add All 3 to Cart</button>
+      </div>
+    </div>
+
+    <!-- RECENTLY VIEWED -->
+    <div style="margin-top:20px;">
+      <div class="section-hd"><h2>Recently Viewed</h2><span class="see-all">See full history →</span></div>
+      <div class="rv-scroll">
+        <div class="rv-card"><div class="rv-thumb dt1">🤖</div><div class="rv-body"><h5>AI Calling Agent Pro</h5><div class="rv-pr">₹74,999</div></div></div>
+        <div class="rv-card"><div class="rv-thumb dt2">💳</div><div class="rv-body"><h5>Loan CRM v4</h5><div
