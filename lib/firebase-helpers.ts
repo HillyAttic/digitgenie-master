@@ -6,13 +6,20 @@ import {
   remove,
   push
 } from 'firebase/database'
-import { db } from './firebase'
+import { db, firebaseConfigured } from './firebase'
 import { Website } from './types'
+
+const NOT_CONFIGURED = new Error(
+  'Firebase is not configured. Add the NEXT_PUBLIC_FIREBASE_* environment variables.'
+)
 
 // Database helper functions for Realtime Database
 export const firebaseDb = {
   // Get all data from a path
   async select<T>(path: string): Promise<{ data: T[] | null; error: any }> {
+    if (!firebaseConfigured) {
+      return { data: [], error: null }
+    }
     try {
       const snapshot = await get(ref(db, path))
       
@@ -41,6 +48,9 @@ export const firebaseDb = {
 
   // Add a new item
   async insert<T>(path: string, data: Omit<T, 'id'>): Promise<{ data: T | null; error: any }> {
+    if (!firebaseConfigured) {
+      return { data: null, error: NOT_CONFIGURED }
+    }
     try {
       const itemData = {
         ...data,
@@ -64,6 +74,9 @@ export const firebaseDb = {
 
   // Update an item
   async update<T>(path: string, id: string, updates: Partial<T>): Promise<{ data: T | null; error: any }> {
+    if (!firebaseConfigured) {
+      return { data: null, error: NOT_CONFIGURED }
+    }
     try {
       const updateData = {
         ...updates,
@@ -86,6 +99,9 @@ export const firebaseDb = {
 
   // Delete an item
   async delete(path: string, id: string): Promise<{ error: any }> {
+    if (!firebaseConfigured) {
+      return { error: NOT_CONFIGURED }
+    }
     try {
       const itemRef = ref(db, `${path}/${id}`)
       await remove(itemRef)

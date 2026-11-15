@@ -22,18 +22,37 @@ const missingKeys = Object.entries(firebaseConfig)
   .filter(([, value]) => !value)
   .map(([key]) => key)
 
+// Vercel previews build without NEXT_PUBLIC_* values until Firebase is connected.
+// Throw at import time and page-data collection fails, so fall back to a
+// placeholder app: the UI builds and renders, reads/writes just fail until the
+// real environment variables are set.
+const config = missingKeys.length
+  ? {
+      apiKey: 'demo-api-key',
+      authDomain: 'demo-digitgenie.firebaseapp.com',
+      projectId: 'demo-digitgenie',
+      storageBucket: 'demo-digitgenie.appspot.com',
+      messagingSenderId: '000000000000',
+      appId: '1:000000000000:web:0000000000000000000000',
+      measurementId: 'G-0000000000',
+      databaseURL: 'https://demo-digitgenie-default-rtdb.firebaseio.com',
+    }
+  : firebaseConfig
+
 if (missingKeys.length > 0) {
-  throw new Error(
+  console.warn(
     `Missing Firebase configuration: ${missingKeys.join(', ')}. ` +
-      'Copy .env.example to .env.local and fill in the values.'
+      'Running with placeholder config - set the NEXT_PUBLIC_* values to connect Firebase.'
   )
 }
 
+export const firebaseConfigured = missingKeys.length === 0
+
 // Initialize Firebase
-const app = initializeApp(firebaseConfig)
+const app = initializeApp(config)
 
 // Initialize Firebase services
-export const db = getDatabase(app, firebaseConfig.databaseURL as string)
+export const db = getDatabase(app, config.databaseURL as string)
 export const auth = getAuth(app)
 export const storage = getStorage(app)
 
