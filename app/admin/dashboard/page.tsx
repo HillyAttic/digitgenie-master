@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 import { get, ref, set } from 'firebase/database'
@@ -9,153 +9,26 @@ import { db } from '@/lib/firebase'
 import { useAuth } from '@/hooks/useAuth'
 import { THEMES } from '@/app/prototype/homepage/data'
 import { Website } from '@/lib/types'
+import { Badge, Icon, PRIORITY_TONE, type IconName } from './ui'
+import {
+  AIPanel,
+  CmsPanel,
+  DevelopersPanel,
+  EmployeesPanel,
+  FinancePanel,
+  LeadPipelineCard,
+  MarketingPanel,
+  PartnersPanel,
+  ReportsPanel,
+  RevenueOverviewCard,
+  SalesPanel,
+  SettingsPanel,
+} from './Panels'
 
 const CORAL_FONTS =
   'https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap'
 
-const ICONS = {
-  overview: (
-    <>
-      <rect x="3" y="3" width="7" height="7" rx="1.5" />
-      <rect x="14" y="3" width="7" height="7" rx="1.5" />
-      <rect x="14" y="14" width="7" height="7" rx="1.5" />
-      <rect x="3" y="14" width="7" height="7" rx="1.5" />
-    </>
-  ),
-  customers: (
-    <>
-      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-      <circle cx="9" cy="7" r="4" />
-      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-    </>
-  ),
-  projects: (
-    <>
-      <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
-      <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
-      <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" />
-      <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
-    </>
-  ),
-  orders: (
-    <>
-      <path d="M16.5 9.4 7.55 4.24" />
-      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-      <path d="M3.29 7 12 12l8.71-5" />
-      <path d="M12 22V12" />
-    </>
-  ),
-  invoices: (
-    <>
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-      <path d="M14 2v6h6" />
-      <path d="M16 13H8" />
-      <path d="M16 17H8" />
-      <path d="M10 9H8" />
-    </>
-  ),
-  payouts: (
-    <>
-      <rect x="2" y="6" width="20" height="12" rx="2" />
-      <circle cx="12" cy="12" r="2" />
-      <path d="M6 12h.01M18 12h.01" />
-    </>
-  ),
-  homepage: (
-    <>
-      <path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z" />
-      <path d="M9 21v-8h6v8" />
-    </>
-  ),
-  websites: (
-    <>
-      <circle cx="12" cy="12" r="9" />
-      <path d="M3 12h18" />
-      <path d="M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18z" />
-    </>
-  ),
-  products: (
-    <>
-      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-      <path d="M3 6h18" />
-      <path d="M16 10a4 4 0 0 1-8 0" />
-    </>
-  ),
-  tickets: (
-    <>
-      <path d="M3 11h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5Z" />
-      <path d="M21 11h-3a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-5Z" />
-      <path d="M3 11a9 9 0 0 1 18 0" />
-      <path d="M21 16v2a4 4 0 0 1-4 4h-5" />
-    </>
-  ),
-  notifications: (
-    <>
-      <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-      <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
-    </>
-  ),
-  menu: <path d="M4 6h16M4 12h16M4 18h16" />,
-  check: (
-    <>
-      <circle cx="12" cy="12" r="9" />
-      <path d="m8.5 12 2.5 2.5 4.5-5" />
-    </>
-  ),
-  paperclip: (
-    <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" />
-  ),
-  card: (
-    <>
-      <rect x="2" y="5" width="20" height="14" rx="2" />
-      <path d="M2 10h20" />
-    </>
-  ),
-  receipt: (
-    <>
-      <path d="M5 3v18l2-1 2 1 2-1 2 1 2-1 2 1V3l-2 1-2-1-2 1-2-1-2 1z" />
-      <path d="M9 8h6M9 12h6M9 16h4" />
-    </>
-  ),
-  userPlus: (
-    <>
-      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-      <circle cx="9" cy="7" r="4" />
-      <path d="M19 8v6M22 11h-6" />
-    </>
-  ),
-  chat: (
-    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-  ),
-  plane: (
-    <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z" />
-  ),
-  pulse: <path d="M22 12h-4l-3 9L9 3l-3 9H2" />,
-} satisfies Record<string, ReactNode>
-
-type IconName = keyof typeof ICONS
-
-function Icon({ name, size = 18 }: { name: IconName; size?: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.7}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      focusable="false"
-    >
-      {ICONS[name]}
-    </svg>
-  )
-}
-
-type NavItem = { id: string; icon: IconName; label: string }
+type NavItem = { id: string; icon: IconName; label: string; isNew?: boolean }
 
 const NAV: { group: string; items: NavItem[] }[] = [
   {
@@ -164,6 +37,8 @@ const NAV: { group: string; items: NavItem[] }[] = [
       { id: 'ov', icon: 'overview', label: 'Overview' },
       { id: 'cu', icon: 'customers', label: 'Customers' },
       { id: 'pj', icon: 'projects', label: 'Projects' },
+      { id: 'em', icon: 'employees', label: 'Employees' },
+      { id: 'dv', icon: 'code', label: 'Developers' },
     ],
   },
   {
@@ -172,6 +47,16 @@ const NAV: { group: string; items: NavItem[] }[] = [
       { id: 'od', icon: 'orders', label: 'Orders' },
       { id: 'iv', icon: 'invoices', label: 'Invoices' },
       { id: 'po', icon: 'payouts', label: 'Payouts' },
+      { id: 'pd', icon: 'products', label: 'Products & Services' },
+      { id: 'pt', icon: 'partners', label: 'Partners' },
+    ],
+  },
+  {
+    group: 'Growth',
+    items: [
+      { id: 'sl', icon: 'sales', label: 'Sales & Leads' },
+      { id: 'mk', icon: 'marketing', label: 'Marketing' },
+      { id: 'fi', icon: 'finance', label: 'Finance' },
     ],
   },
   {
@@ -179,7 +64,7 @@ const NAV: { group: string; items: NavItem[] }[] = [
     items: [
       { id: 'hp', icon: 'homepage', label: 'Homepage' },
       { id: 'wb', icon: 'websites', label: 'Websites' },
-      { id: 'pd', icon: 'products', label: 'Products' },
+      { id: 'cms', icon: 'cms', label: 'Website CMS' },
     ],
   },
   {
@@ -189,20 +74,41 @@ const NAV: { group: string; items: NavItem[] }[] = [
       { id: 'nt', icon: 'notifications', label: 'Notifications' },
     ],
   },
+  {
+    group: 'Insights',
+    items: [
+      { id: 'rp', icon: 'reports', label: 'Reports' },
+      { id: 'ai', icon: 'ai', label: 'AI Intelligence', isNew: true },
+    ],
+  },
+  {
+    group: 'System',
+    items: [{ id: 'st', icon: 'settings', label: 'Settings' }],
+  },
 ]
 
 const TITLES: Record<string, string> = {
   ov: 'Overview',
   cu: 'Customers',
   pj: 'Projects',
+  em: 'Employees',
+  dv: 'Developers',
   od: 'Orders',
   iv: 'Invoices & Payments',
   po: 'Payouts',
+  pd: 'Products & Services',
+  pt: 'Partners',
+  sl: 'Sales & Leads',
+  mk: 'Marketing',
+  fi: 'Finance',
   wb: 'Websites',
-  pd: 'Products',
   hp: 'Homepage',
+  cms: 'Website CMS',
   tk: 'Support Tickets',
   nt: 'Notifications',
+  rp: 'Reports & Analytics',
+  ai: 'AI Intelligence',
+  st: 'Settings',
 }
 
 const HOMEPAGE_OPTIONS = [
@@ -278,32 +184,6 @@ const INITIAL_NOTIFICATIONS: { icon: IconName; text: string; time: string; unrea
   { icon: 'receipt', text: 'Payout WD-74 processed', time: '3 days ago', unread: false },
   { icon: 'userPlus', text: 'New partner application from Mehta Finance', time: '4 days ago', unread: false },
 ]
-
-const TONE: Record<string, string> = {
-  Active: 'g',
-  Paid: 'g',
-  Completed: 'g',
-  Resolved: 'g',
-  Approved: 'g',
-  Converted: 'g',
-  'In Progress': 'b',
-  'Under Review': 'b',
-  'In Review': 'b',
-  Pending: 'y',
-  Open: 'y',
-  Draft: 'm',
-  Prospect: 'y',
-  Rejected: 'r',
-  Churned: 'r',
-  Overdue: 'r',
-  Cancelled: 'r',
-}
-
-const PRIORITY_TONE: Record<string, string> = { High: 'r', Medium: 'y', Low: 'm' }
-
-function Badge({ status, tone }: { status: string; tone?: string }) {
-  return <span className={`dg-bd dg-b-${tone || TONE[status] || 'm'}`}>{status}</span>
-}
 
 export default function AdminDashboard() {
   const router = useRouter()
@@ -783,6 +663,7 @@ export default function AdminDashboard() {
           justify-content: space-between;
           align-items: center;
           gap: 10px;
+          flex-wrap: wrap;
           margin-bottom: 12px;
         }
         .dg-hd h3 {
@@ -1093,6 +974,196 @@ export default function AdminDashboard() {
           padding: 1px 6px;
           border-radius: 99px;
         }
+        .dg-tabs {
+          display: flex;
+          gap: 6px;
+          flex-wrap: wrap;
+          margin-bottom: 12px;
+        }
+        .dg-tab {
+          background: transparent;
+          border: 1px solid var(--bd);
+          color: var(--mu);
+          border-radius: 99px;
+          padding: 6px 13px;
+          font: 600 12px 'General Sans', ui-sans-serif, system-ui, sans-serif;
+          cursor: pointer;
+          transition: 0.2s;
+        }
+        .dg-tab:hover:not(.on) {
+          border-color: var(--accent);
+          color: var(--tx);
+        }
+        .dg-tab.on {
+          background: var(--accent-2);
+          border-color: var(--accent-2);
+          color: var(--cotton);
+        }
+        .dg-new {
+          margin-left: auto;
+          background: var(--accent-2);
+          color: var(--cotton);
+          font-size: 9px;
+          font-weight: 800;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+          padding: 1px 6px;
+          border-radius: 99px;
+        }
+        .dg-bars {
+          display: flex;
+          align-items: stretch;
+          gap: 10px;
+        }
+        .dg-bar {
+          flex: 1;
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+          gap: 6px;
+        }
+        .dg-bar-cols {
+          flex: 1;
+          min-height: 0;
+          display: flex;
+          align-items: flex-end;
+          justify-content: center;
+          gap: 3px;
+        }
+        .dg-bar-cols i {
+          display: block;
+          width: 40%;
+          max-width: 16px;
+          min-height: 2px;
+          border-radius: 3px 3px 0 0;
+          background: var(--accent-2);
+        }
+        .dg-bar-cols i.exp {
+          background: color-mix(in oklch, var(--accent) 40%, var(--bd));
+        }
+        .dg-bar span {
+          font-size: 10px;
+          color: var(--mu);
+          text-align: center;
+        }
+        .dg-legend {
+          display: flex;
+          gap: 12px;
+          align-items: center;
+          font-size: 11px;
+          color: var(--mu);
+        }
+        .dg-legend i {
+          display: inline-block;
+          width: 8px;
+          height: 8px;
+          border-radius: 2px;
+          background: var(--accent-2);
+          margin-right: 5px;
+        }
+        .dg-legend i.exp {
+          background: color-mix(in oklch, var(--accent) 40%, var(--bd));
+        }
+        .dg-pipeline {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+        .dg-pipe-row > div:first-child {
+          display: flex;
+          justify-content: space-between;
+          font-size: 12px;
+          margin-bottom: 5px;
+        }
+        .dg-track {
+          height: 7px;
+          background: oklch(91.5% 0.009 55);
+          border-radius: 9px;
+          overflow: hidden;
+        }
+        .dg-track i {
+          display: block;
+          height: 100%;
+          border-radius: 9px;
+          background: var(--accent-2);
+        }
+        .dg-note {
+          font-size: 11px;
+          line-height: 1.5;
+          color: var(--mu);
+          margin-top: 10px;
+        }
+        .dg-input,
+        .dg-select {
+          flex: 1;
+          min-width: 0;
+          background: oklch(97% 0.006 55);
+          border: 1px solid var(--bd);
+          border-radius: 8px;
+          padding: 9px 11px;
+          color: var(--tx);
+          font: 13px 'General Sans', ui-sans-serif, system-ui, sans-serif;
+          outline: 0;
+          transition: border-color 0.2s, background 0.2s;
+        }
+        .dg-select {
+          flex: 0 0 auto;
+        }
+        .dg-input:focus,
+        .dg-select:focus {
+          border-color: var(--accent-2);
+          background: var(--cotton);
+        }
+        .dg-inline {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          flex-wrap: wrap;
+        }
+        .dg-chat {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          max-height: 230px;
+          overflow-y: auto;
+          margin: 12px 0;
+        }
+        .dg-msg {
+          max-width: 86%;
+          padding: 9px 12px;
+          border-radius: 10px;
+          font-size: 12px;
+          line-height: 1.45;
+        }
+        .dg-msg.me {
+          align-self: flex-end;
+          background: var(--accent-2);
+          color: var(--cotton);
+        }
+        .dg-msg.bot {
+          align-self: flex-start;
+          background: oklch(97% 0.006 55);
+          border: 1px solid var(--bd);
+        }
+        .dg-check {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 12px;
+          color: var(--tx);
+          margin-top: 12px;
+          cursor: pointer;
+        }
+        .dg-check input {
+          accent-color: var(--accent-2);
+          width: 15px;
+          height: 15px;
+        }
+        .dg-card code {
+          font-size: 11px;
+          color: var(--mu);
+        }
         .dg-mb {
           display: none;
         }
@@ -1155,6 +1226,7 @@ export default function AdminDashboard() {
                       <Icon name={item.icon} size={17} />
                     </i>
                     {item.label}
+                    {item.isNew && <span className="dg-new">NEW</span>}
                     {counts[item.id] > 0 && <s>{counts[item.id]}</s>}
                   </button>
                 ))}
@@ -1226,6 +1298,8 @@ export default function AdminDashboard() {
               </div>
 
               <div className="dg-g2">
+                <RevenueOverviewCard />
+                <LeadPipelineCard />
                 <div className="dg-card">
                   <div className="dg-hd">
                     <h3>Active Projects</h3>
@@ -1797,6 +1871,17 @@ export default function AdminDashboard() {
               </div>
             </div>
           )}
+
+          {active === 'em' && <EmployeesPanel />}
+          {active === 'dv' && <DevelopersPanel />}
+          {active === 'pt' && <PartnersPanel />}
+          {active === 'sl' && <SalesPanel />}
+          {active === 'mk' && <MarketingPanel />}
+          {active === 'fi' && <FinancePanel />}
+          {active === 'cms' && <CmsPanel />}
+          {active === 'rp' && <ReportsPanel />}
+          {active === 'ai' && <AIPanel />}
+          {active === 'st' && <SettingsPanel />}
         </main>
       </div>
 
